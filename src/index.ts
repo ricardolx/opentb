@@ -7,7 +7,7 @@ import { callAgentInit } from "./ai/agent/browser-agent";
 dotenv.config();
 import Handlebars from "handlebars";
 import { LLMModel, OpenAIModel } from "./ai/providers/models";
-import { opts } from "./cmd/commands";
+import { opts } from "./cmd";
 
 async function main() {
   console.log("🚀 Starting mobile app test...");
