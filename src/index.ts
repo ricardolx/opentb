@@ -52,7 +52,7 @@ async function main() {
     let testPrompt = opts.testPrompt as string;
     if (!testPrompt) {
       try {
-        const defaultTestPath = join(__dirname, "default_test.md");
+        const defaultTestPath = join(__dirname, "prompt-templates", "DefaultTest.md");
         testPrompt = readFileSync(defaultTestPath, "utf-8");
         console.log("📝 Loaded default test instructions from default_test.md");
       } catch (error: unknown) {
@@ -65,7 +65,7 @@ async function main() {
     }
 
     const systemPromptTemplate = Handlebars.compile(
-      readFileSync(join(__dirname, "SystemPrompt.hbs"), "utf-8")
+      readFileSync(join(__dirname, "prompt-templates", "SystemPrompt.hbs"), "utf-8")
     );
 
     const systemPrompt = systemPromptTemplate({
