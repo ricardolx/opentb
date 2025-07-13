@@ -5,6 +5,14 @@ import {
   ChatCompletionMessageToolCall,
 } from "openai/resources";
 
+/**
+ * Execute the webdriver function call loop
+ * @param functionCalls 
+ * @param contents 
+ * @param driver 
+ * @param actionSteps 
+ * @returns 
+ */
 export const executeWebDriverLoop = async (
   functionCalls: ChatCompletionMessageToolCall[],
   contents: ChatCompletionMessageParam[],
