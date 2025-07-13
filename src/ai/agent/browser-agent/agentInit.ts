@@ -2,6 +2,14 @@ import { callLlmAgentLoop } from "./";
 import { GeminiModel, LLMModel } from "../../providers/models";
 import { ChatCompletionMessageParam } from "openai/resources";
 
+/**
+ * Initiate the agent
+ * @param prompt 
+ * @param systemPrompt 
+ * @param driver 
+ * @param model 
+ * @returns 
+ */
 export const callAgentInit = async (
   prompt: string,
   systemPrompt: string,
