@@ -7,6 +7,13 @@ import { TestTools } from "../tools";
 import { executeWebDriverLoop } from "./webDriverLoop";
 import { GeminiModel, LLMModel } from "../../providers/models";
 
+/**
+ * Initiate the agents recursive loop
+ * @param contents 
+ * @param driver 
+ * @param model 
+ * @returns 
+ */
 export const callLlmAgentLoop = async (
   contents: ChatCompletionMessageParam[],
   driver: WebdriverIO.Browser,
