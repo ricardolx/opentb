@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "ts-node src/index.ts",
     "dev": "tsc --watch",
     "lint": "eslint . --ext .ts",
     "test:mobile": "ts-node test/index.ts",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@wdio/config": "^9.17.0",
     "appium": "^2.19.0",
+    "commander": "^14.0.0",
     "dotenv": "^17.2.0",
     "handlebars": "^4.7.8",
     "openai": "^5.9.0",
