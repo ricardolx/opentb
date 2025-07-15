@@ -19,6 +19,7 @@ export const callLlm = async (
   model: LLMModel,
   tools: ChatCompletionTool[]
 ) => {
+  console.log("[ callLlm ] with", model);
   const response = await openAI.chat.completions.create({
     model,
     messages: contents,
