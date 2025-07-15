@@ -27,8 +27,7 @@ export const executeWebDriverLoop = async (
   for (const functionCall of functionCalls) {
     console.log(
       "[ executeWebDriverLoop ] function call",
-      functionCall.function.name,
-      functionCall.function.arguments
+      functionCall.function.name
     );
     if (functionCall.function.name === "element_action") {
       const response = await elementActionToolCall(
@@ -36,11 +35,23 @@ export const executeWebDriverLoop = async (
         driver
       );
 
+      contents.push({
+        role: "tool",
+        tool_call_id: functionCall.id,
+        content: response?.message ?? "",
+      });
+
       actionSteps.push(response?.message ?? "");
 
       console.log("[ executeWebDriverLoop ] actions taken", actionSteps.length);
     } else if (functionCall.function.name === "write_error") {
       console.error(functionCall.function.arguments);
+
+      contents.push({
+        role: "tool",
+        tool_call_id: functionCall.id,
+        content: "Error written to log",
+      });
 
       actionSteps.push(functionCall.function.arguments);
     } else if (functionCall.function.name === "write_test_result") {
@@ -50,43 +61,52 @@ export const executeWebDriverLoop = async (
 
       console.log(`[ TEST RESULT ][ ${success ? "✅" : "❌"} ]`, message);
 
+      contents.push({
+        role: "tool",
+        tool_call_id: functionCall.id,
+        content: `Result written to log, test is ${
+          success ? "✅" : "❌"
+        }. End the test now.`,
+      });
+
       actionSteps.push(message);
     } else if (functionCall.function.name === "wait") {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
+      contents.push({
+        role: "tool",
+        tool_call_id: functionCall.id,
+        content: `Waited for ${functionCall.function.arguments} seconds`,
+      });
+
       actionSteps.push(functionCall.function.arguments);
     } else {
       actionSteps.push("tool call not found:", functionCall.function.arguments);
+      contents.push({
+        role: "tool",
+        tool_call_id: functionCall.id,
+        content: `Tool call not found: ${functionCall.function.arguments}`,
+      });
     }
-
-    contents = [
-      contents[0],
-      contents[1],
-      {
-        role: "assistant",
-        content: `Steps taken: ${actionSteps.join("\n")}`,
-      },
-    ];
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const currentPageSource = await driver.getPageSource();
-
-    contents.push({
-      role: "user",
-      content: currentPageSource,
-    });
-    addScreenshotToContents(contents, driver);
-
-    console.log("[ added contents tool results ]", contents.length);
-    await driver.waitUntil(
-      async () => {
-        const currentPageSource = await driver.getPageSource();
-        return currentPageSource.length > 0;
-      },
-      { timeout: 1000, timeoutMsg: "Page source is not ready" }
-    );
   }
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  const currentPageSource = await driver.getPageSource();
+
+  contents.push({
+    role: "user",
+    content: currentPageSource,
+  });
+  addScreenshotToContents(contents, driver);
+
+  console.log("[ added contents tool results ]", contents.length);
+  await driver.waitUntil(
+    async () => {
+      const currentPageSource = await driver.getPageSource();
+      return currentPageSource.length > 0;
+    },
+    { timeout: 1000, timeoutMsg: "Page source is not ready" }
+  );
 
   console.log("[ added contents page source ]", contents.length);
   console.log("[ action steps taken ]", actionSteps.length);

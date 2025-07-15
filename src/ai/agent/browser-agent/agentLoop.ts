@@ -27,6 +27,12 @@ export const callLlmAgentLoop = async (
   const toolCalls = response.tool_calls;
 
   if (toolCalls && toolCalls.length > 0) {
+    contents[contents.length - 1].content = "Old Page Source";
+    contents.push({
+      role: "assistant",
+      tool_calls: toolCalls,
+    });
+
     console.log(
       "[ callLlmAgentLoop ] with",
       toolCalls.length,
@@ -40,6 +46,10 @@ export const callLlmAgentLoop = async (
     );
 
     console.log("[ callLlmAgentLoop ] calls executed, recursing");
+    console.log(
+      "[ Action steps taken ]",
+      actionSteps.map(step => `[${step}]`).join("\n")
+    );
     return await callLlmAgentLoop(newContents, driver, actionSteps, model);
   }
   console.log("[ callLlmAgentLoop ] no function calls, returning");

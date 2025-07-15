@@ -81,7 +81,7 @@ async function main() {
       testPrompt,
       systemPrompt,
       driver,
-      (process.env.MODEL as LLMModel) || OpenAIModel.GPT_4o
+      (process.env.LLM_MODEL as LLMModel) || OpenAIModel.GPT_4o
     );
     console.log("[ test complete ]", results);
   } catch (error) {
