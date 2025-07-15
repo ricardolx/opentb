@@ -7,11 +7,11 @@ import {
 
 /**
  * Execute the webdriver function call loop
- * @param functionCalls 
- * @param contents 
- * @param driver 
- * @param actionSteps 
- * @returns 
+ * @param functionCalls
+ * @param contents
+ * @param driver
+ * @param actionSteps
+ * @returns
  */
 export const executeWebDriverLoop = async (
   functionCalls: ChatCompletionMessageToolCall[],
@@ -30,7 +30,6 @@ export const executeWebDriverLoop = async (
       functionCall.function.name,
       functionCall.function.arguments
     );
-    let functionResponse: ChatCompletionMessageToolCall;
     if (functionCall.function.name === "element_action") {
       const response = await elementActionToolCall(
         JSON.parse(functionCall.function.arguments) as ElementAction,
@@ -38,86 +37,40 @@ export const executeWebDriverLoop = async (
       );
       actionSteps.push(response?.message ?? "");
       console.log("[ executeWebDriverLoop ] actions taken", actionSteps.length);
-
-      functionResponse = {
-        id: functionCall.id,
-        function: functionCall.function,
-        type: functionCall.type,
-      };
-      console.log(
-        "[ executeWebDriverLoop ] function response",
-        functionResponse.function.arguments
-      );
-
-      const currentPageSource = await driver.getPageSource();
-      contents = [
-        contents[0],
-        contents[1],
-        {
-          role: "tool",
-          tool_call_id: functionCall.id,
-          content: response?.message ?? "",
-        },
-      ];
-
-      contents.push({
-        role: "user",
-        content: currentPageSource,
-      });
-      await addScreenshotToContents(contents, driver);
     } else if (functionCall.function.name === "write_error") {
       console.error(functionCall.function.arguments);
-      contents.push({
-        role: "tool",
-        tool_call_id: functionCall.id,
-        content: functionCall.function.arguments,
-      });
-      contents.push({
-        role: "tool",
-        tool_call_id: functionCall.id,
-        content: functionCall.function.arguments,
-      });
+      actionSteps.push(functionCall.function.arguments);
     } else if (functionCall.function.name === "write_test_result") {
       const { success, message } = JSON.parse(
         functionCall.function.arguments
       ) as { success: boolean; message: string };
       console.log(`[ TEST RESULT ][ ${success ? "✅" : "❌"} ]`, message);
-
-      contents.push({
-        role: "tool",
-        tool_call_id: functionCall.id,
-        content: functionCall.function.arguments,
-      });
-      contents.push({
-        role: "tool",
-        tool_call_id: functionCall.id,
-        content: functionCall.function.arguments,
-      });
+      actionSteps.push(message);
     } else if (functionCall.function.name === "wait") {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      contents = [
-        contents[0],
-        {
-          role: "tool",
-          tool_call_id: functionCall.id,
-          content: `Steps taken: ${actionSteps.join("\n")}`,
-        },
-      ];
-      const currentPageSource = await driver.getPageSource();
-
-      contents.push({
-        role: "user",
-        content: currentPageSource,
-      });
-
-      await addScreenshotToContents(contents, driver);
+      actionSteps.push(functionCall.function.arguments);
     } else {
-      functionResponse = {
-        id: functionCall.id,
-        function: functionCall.function,
-        type: functionCall.type,
-      };
+      actionSteps.push(functionCall.function.arguments);
     }
+
+    contents = [
+      contents[0],
+      contents[1],
+      {
+        role: "assistant",
+        content: `Steps taken: ${actionSteps.join("\n")}`,
+      },
+    ];
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const currentPageSource = await driver.getPageSource();
+
+    contents.push({
+      role: "user",
+      content: currentPageSource,
+    });
+    addScreenshotToContents(contents, driver);
 
     console.log("[ added contents tool results ]", contents.length);
     await driver.waitUntil(
