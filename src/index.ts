@@ -10,7 +10,6 @@ import { opts } from "./cmd";
 import { logger, parseLogLevel } from "./utils/logger";
 
 async function main() {
-  // Initialize logger with specified log level
   logger.setLogLevel(parseLogLevel(opts.logLevel as string));
   
   logger.log("🚀 Starting mobile app test...");

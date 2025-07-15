@@ -48,14 +48,12 @@ export class Logger {
   }
 
   public log(...args: unknown[]): void {
-    // Always log basic messages regardless of level (for important user-facing info)
     console.log(...args);
   }
 }
 
 export const logger = Logger.getInstance();
 
-// Helper function to parse log level from string
 export function parseLogLevel(level: string): LogLevel {
   switch (level.toLowerCase()) {
     case "debug":
