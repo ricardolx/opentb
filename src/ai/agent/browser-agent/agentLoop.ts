@@ -46,12 +46,14 @@ export const callLlmAgentLoop = async (
     );
 
     console.log("[ callLlmAgentLoop ] calls executed, recursing");
-    console.log(
-      "[ Action steps taken ]",
-      actionSteps.map(step => `[${step}]`).join("\n")
-    );
     return await callLlmAgentLoop(newContents, driver, actionSteps, model);
   }
+
+  console.log(
+    "[ Action steps taken ]",
+    actionSteps.map(step => `[${step}]`).join("\n")
+  );
+  
   console.log("[ callLlmAgentLoop ] no function calls, returning");
   return response;
 };
