@@ -1,10 +1,9 @@
 import dotenv from "dotenv";
+dotenv.config();
 import { remote } from "webdriverio";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { callAgentInit } from "./ai/agent/browser-agent";
-
-dotenv.config();
 import Handlebars from "handlebars";
 import { LLMModel, OpenAIModel } from "./ai/providers/models";
 import { opts } from "./cmd";
