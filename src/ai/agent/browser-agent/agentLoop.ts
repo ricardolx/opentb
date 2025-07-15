@@ -6,6 +6,7 @@ import { callLlm } from "../../providers/openRouter";
 import { TestTools } from "../tools";
 import { executeWebDriverLoop } from "./webDriverLoop";
 import { GeminiModel, LLMModel } from "../../providers/models";
+import { logger } from "../../../utils/logger";
 
 /**
  * Initiate the agents recursive loop
@@ -20,7 +21,7 @@ export const callLlmAgentLoop = async (
   actionSteps: string[] = [],
   model: LLMModel = GeminiModel.GEMINI_2_5_PRO
 ): Promise<ChatCompletionMessage> => {
-  console.log("[ callLlmAgentLoop ] with", contents.length, "contents");
+  logger.debug("[ callLlmAgentLoop ] with", contents.length, "contents");
 
   const response = await callLlm(contents, model, TestTools);
 
@@ -33,7 +34,7 @@ export const callLlmAgentLoop = async (
       tool_calls: toolCalls,
     });
 
-    console.log(
+    logger.debug(
       "[ callLlmAgentLoop ] with",
       toolCalls.length,
       "function calls"
@@ -45,15 +46,15 @@ export const callLlmAgentLoop = async (
       actionSteps
     );
 
-    console.log("[ callLlmAgentLoop ] calls executed, recursing");
+    logger.debug("[ callLlmAgentLoop ] calls executed, recursing");
     return await callLlmAgentLoop(newContents, driver, actionSteps, model);
   }
 
-  console.log(
+  logger.info(
     "[ Action steps taken ]",
     actionSteps.map(step => `[${step}]`).join("\n")
   );
 
-  console.log("[ callLlmAgentLoop ] no function calls, returning");
+  logger.debug("[ callLlmAgentLoop ] no function calls, returning");
   return response;
 };

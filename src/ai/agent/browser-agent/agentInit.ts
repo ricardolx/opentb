@@ -1,6 +1,7 @@
 import { callLlmAgentLoop } from "./";
 import { GeminiModel, LLMModel } from "../../providers/models";
 import { ChatCompletionMessageParam } from "openai/resources";
+import { logger } from "../../../utils/logger";
 
 /**
  * Initiate the agent
@@ -16,7 +17,7 @@ export const callAgentInit = async (
   driver: WebdriverIO.Browser,
   model: LLMModel = GeminiModel.GEMINI_2_5_PRO
 ) => {
-  console.log("[ callAgentInit ] with", prompt.substring(0, 30), "...");
+  logger.debug("[ callAgentInit ] with", prompt.substring(0, 30), "...");
 
   const content: ChatCompletionMessageParam[] = [
     {
@@ -43,8 +44,8 @@ export const callAgentInit = async (
   const response = await callLlmAgentLoop(content, driver, actionSteps, model);
   const duration = Date.now() - time;
 
-  console.log("[ callLlmAgentLoop ] ✅ complete");
-  console.log(
+  logger.info("[ callLlmAgentLoop ] ✅ complete");
+  logger.info(
     "[ Duration ] 🕒 ",
     duration > 60000 ? `${duration / 60000}m` : `${duration}ms`
   );

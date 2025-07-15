@@ -4,6 +4,7 @@ import {
   ChatCompletionMessageParam,
   ChatCompletionMessageToolCall,
 } from "openai/resources";
+import { logger } from "../../../utils/logger";
 
 /**
  * Execute the webdriver function call loop
@@ -19,13 +20,13 @@ export const executeWebDriverLoop = async (
   driver: WebdriverIO.Browser,
   actionSteps: string[]
 ) => {
-  console.log(
+  logger.debug(
     "[ executeWebDriverLoop ] with",
     functionCalls.length,
     "function calls"
   );
   for (const functionCall of functionCalls) {
-    console.log(
+    logger.debug(
       "[ executeWebDriverLoop ] function call",
       functionCall.function.name
     );
@@ -43,9 +44,9 @@ export const executeWebDriverLoop = async (
 
       actionSteps.push(response?.message ?? "");
 
-      console.log("[ executeWebDriverLoop ] actions taken", actionSteps.length);
+      logger.log("[ executeWebDriverLoop ] actions taken", actionSteps.length);
     } else if (functionCall.function.name === "write_error") {
-      console.error(functionCall.function.arguments);
+      logger.error(functionCall.function.arguments);
 
       contents.push({
         role: "tool",
@@ -59,7 +60,7 @@ export const executeWebDriverLoop = async (
         functionCall.function.arguments
       ) as { success: boolean; message: string };
 
-      console.log(`[ TEST RESULT ][ ${success ? "✅" : "❌"} ]`, message);
+      logger.info(`[ TEST RESULT ][ ${success ? "✅" : "❌"} ]`, message);
 
       contents.push({
         role: "tool",
@@ -99,7 +100,7 @@ export const executeWebDriverLoop = async (
   });
   addScreenshotToContents(contents, driver);
 
-  console.log("[ added contents tool results ]", contents.length);
+  logger.debug("[ added contents tool results ]", contents.length);
   await driver.waitUntil(
     async () => {
       const currentPageSource = await driver.getPageSource();
@@ -108,8 +109,8 @@ export const executeWebDriverLoop = async (
     { timeout: 1000, timeoutMsg: "Page source is not ready" }
   );
 
-  console.log("[ added contents page source ]", contents.length);
-  console.log("[ action steps taken ]", actionSteps.length);
+  logger.debug("[ added contents page source ]", contents.length);
+  logger.debug("[ action steps taken ]", actionSteps.length);
 
   return contents;
 };

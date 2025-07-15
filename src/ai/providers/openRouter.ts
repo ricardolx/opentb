@@ -4,6 +4,7 @@ import {
   ChatCompletionTool,
 } from "openai/resources";
 import { LLMModel } from "./models";
+import { logger } from "../../utils/logger";
 
 const openAI = new OpenAI({
   baseURL: process.env.LLM_BASE_URL,
@@ -19,16 +20,16 @@ export const callLlm = async (
   model: LLMModel,
   tools: ChatCompletionTool[]
 ) => {
-  console.log("[ callLlm ] with", model);
+  logger.debug("[ callLlm ] with", model);
   const response = await openAI.chat.completions.create({
     model,
     messages: contents,
     tools,
   });
 
-  console.log("[ callLlm ] completion tokens", response.usage?.completion_tokens);
-  console.log("[ callLlm ] prompt tokens", response.usage?.prompt_tokens);
-  console.log("[ callLlm ] total tokens", response.usage?.total_tokens);
+  logger.debug("[ callLlm ] completion tokens", response.usage?.completion_tokens);
+  logger.debug("[ callLlm ] prompt tokens", response.usage?.prompt_tokens);
+  logger.debug("[ callLlm ] total tokens", response.usage?.total_tokens);
 
   return response.choices[0].message;
 };

@@ -7,10 +7,14 @@ import { callAgentInit } from "./ai/agent/browser-agent";
 import Handlebars from "handlebars";
 import { LLMModel, OpenAIModel } from "./ai/providers/models";
 import { opts } from "./cmd";
+import { logger, parseLogLevel } from "./utils/logger";
 
 async function main() {
-  console.log("🚀 Starting mobile app test...");
-  console.log("📋 Options:", opts);
+  // Initialize logger with specified log level
+  logger.setLogLevel(parseLogLevel(opts.logLevel as string));
+  
+  logger.log("🚀 Starting mobile app test...");
+  logger.info("📋 Options:", opts);
 
   const bundleId = (opts.bundleId as string) || process.env.DEFAULT_BUNDLE_ID;
 
@@ -46,16 +50,16 @@ async function main() {
   });
 
   try {
-    console.log("✅ App launched successfully!");
+    logger.log("✅ App launched successfully!");
 
     let testPrompt = opts.testPrompt as string;
     if (!testPrompt) {
       try {
         const defaultTestPath = join(__dirname, "prompt-templates", "DefaultTest.md");
         testPrompt = readFileSync(defaultTestPath, "utf-8");
-        console.log("📝 Loaded default test instructions from default_test.md");
+        logger.info("📝 Loaded default test instructions from default_test.md");
       } catch (error: unknown) {
-        console.warn(
+        logger.warn(
           "⚠️  Could not load default_test, using fallback prompt",
           error
         );
@@ -83,13 +87,13 @@ async function main() {
       driver,
       (process.env.LLM_MODEL as LLMModel) || OpenAIModel.GPT_4o
     );
-    console.log("[ test complete ]", results);
+    logger.log("[ test complete ]", results);
   } catch (error) {
-    console.error("❌ Test failed:", error);
+    logger.error("❌ Test failed:", error);
   } finally {
     await driver.deleteSession();
-    console.log("🔚 Session closed");
+    logger.log("🔚 Session closed");
   }
 }
 
-main().catch(console.error);
+main().catch(logger.error);

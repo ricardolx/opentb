@@ -1,4 +1,5 @@
 import { ElementAction } from "../elementAction";
+import { logger } from "../../../../utils/logger";
 
 export const elementActionToolCall = async (
   elementAction: ElementAction,
@@ -6,7 +7,7 @@ export const elementActionToolCall = async (
 ) => {
   const { element_identifier, action, value } = elementAction;
 
-  console.log(
+  logger.info(
     "[ elementActionToolCall ] 📲 Performing action:",
     action,
     "on element:",
@@ -14,7 +15,7 @@ export const elementActionToolCall = async (
   );
 
   const findElement = (identifier: string) => {
-    console.log("Finding element with identifier:", identifier);
+    logger.debug("Finding element with identifier:", identifier);
 
     if (identifier.includes("=")) {
       const parts = identifier.split("=");
@@ -23,17 +24,17 @@ export const elementActionToolCall = async (
         const selectorValue = parts[1].trim();
 
         if (selectorType === "xpath") {
-          console.log("Using XPath selector:", selectorValue);
+          logger.debug("Using XPath selector:", selectorValue);
           return driver.$(selectorValue);
         } else if (selectorType === "id") {
-          console.log("Using accessibility ID:", selectorValue);
+          logger.debug("Using accessibility ID:", selectorValue);
           return driver.$(`~${selectorValue}`);
         }
       }
     }
 
     if (identifier.startsWith("//") || identifier.startsWith("/")) {
-      console.log("Using XPath selector:", identifier);
+      logger.debug("Using XPath selector:", identifier);
       return driver.$(identifier);
     }
 
@@ -42,11 +43,11 @@ export const elementActionToolCall = async (
       !identifier.startsWith("//") &&
       !identifier.startsWith("/")
     ) {
-      console.log("Using iOS class chain:", identifier);
+      logger.debug("Using iOS class chain:", identifier);
       return driver.$(`-ios class chain:${identifier}`);
     }
 
-    console.log("Using accessibility ID:", identifier);
+    logger.debug("Using accessibility ID:", identifier);
     const accessibilityId = identifier.startsWith("~")
       ? identifier
       : `~${identifier}`;
@@ -91,7 +92,7 @@ export const elementActionToolCall = async (
       message: `Action ${action} performed on element ${element_identifier}`,
     };
   } catch (error) {
-    console.error("Element action failed:", error);
+    logger.error("Element action failed:", error);
     return {
       success: false,
       message: `Failed to perform action ${action} on element ${element_identifier}: ${error}`,
