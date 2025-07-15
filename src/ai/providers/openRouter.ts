@@ -26,5 +26,9 @@ export const callLlm = async (
     tools,
   });
 
+  console.log("[ callLlm ] completion tokens", response.usage?.completion_tokens);
+  console.log("[ callLlm ] prompt tokens", response.usage?.prompt_tokens);
+  console.log("[ callLlm ] total tokens", response.usage?.total_tokens);
+
   return response.choices[0].message;
 };

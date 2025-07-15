@@ -53,7 +53,7 @@ export const callLlmAgentLoop = async (
     "[ Action steps taken ]",
     actionSteps.map(step => `[${step}]`).join("\n")
   );
-  
+
   console.log("[ callLlmAgentLoop ] no function calls, returning");
   return response;
 };
