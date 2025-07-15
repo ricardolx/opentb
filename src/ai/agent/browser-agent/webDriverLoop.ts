@@ -35,22 +35,28 @@ export const executeWebDriverLoop = async (
         JSON.parse(functionCall.function.arguments) as ElementAction,
         driver
       );
+
       actionSteps.push(response?.message ?? "");
+
       console.log("[ executeWebDriverLoop ] actions taken", actionSteps.length);
     } else if (functionCall.function.name === "write_error") {
       console.error(functionCall.function.arguments);
+
       actionSteps.push(functionCall.function.arguments);
     } else if (functionCall.function.name === "write_test_result") {
       const { success, message } = JSON.parse(
         functionCall.function.arguments
       ) as { success: boolean; message: string };
+
       console.log(`[ TEST RESULT ][ ${success ? "✅" : "❌"} ]`, message);
+
       actionSteps.push(message);
     } else if (functionCall.function.name === "wait") {
       await new Promise(resolve => setTimeout(resolve, 1000));
+
       actionSteps.push(functionCall.function.arguments);
     } else {
-      actionSteps.push(functionCall.function.arguments);
+      actionSteps.push("tool call not found:", functionCall.function.arguments);
     }
 
     contents = [
