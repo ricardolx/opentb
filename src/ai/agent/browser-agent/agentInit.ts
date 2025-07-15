@@ -4,11 +4,11 @@ import { ChatCompletionMessageParam } from "openai/resources";
 
 /**
  * Initiate the agent
- * @param prompt 
- * @param systemPrompt 
- * @param driver 
- * @param model 
- * @returns 
+ * @param prompt
+ * @param systemPrompt
+ * @param driver
+ * @param model
+ * @returns
  */
 export const callAgentInit = async (
   prompt: string,
@@ -20,27 +20,22 @@ export const callAgentInit = async (
 
   const content: ChatCompletionMessageParam[] = [
     {
+      role: "system",
+      content: systemPrompt,
+    },
+    {
       role: "user",
       content: prompt,
     },
   ];
 
   const pageSource = await driver.getPageSource();
-  const base64Screenshot = await driver.saveScreenshot(`screen-first.png`);
-  const base64PageSource = base64Screenshot.toString("base64");
-
-  content.push({
-    role: "system",
-    content: systemPrompt,
-  });
+  // const base64Screenshot = await driver.saveScreenshot(`screen-first.png`);
+  // const base64PageSource = base64Screenshot.toString("base64");
 
   content.push({
     role: "user",
     content: `Here is the page source: ${pageSource}`,
-  });
-  content.push({
-    role: "user",
-    content: base64PageSource,
   });
 
   const time = Date.now();
