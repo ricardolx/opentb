@@ -54,9 +54,10 @@ async function main() {
     let testPrompt = opts.testPrompt as string;
     if (!testPrompt) {
       try {
-        const defaultTestPath = join(__dirname, "prompt-templates", "DefaultTest.md");
+        const testFilePath = opts.testFile ?? "DefaultTest.md";
+        const defaultTestPath = join(__dirname, "prompt-templates", testFilePath);
         testPrompt = readFileSync(defaultTestPath, "utf-8");
-        logger.info("📝 Loaded default test instructions from default_test.md");
+        logger.info("📝 Loaded test instructions from", testFilePath);
       } catch (error: unknown) {
         logger.warn(
           "⚠️  Could not load default_test, using fallback prompt",

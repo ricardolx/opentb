@@ -31,6 +31,7 @@ program
   .option("-w, --wait <ms>", "Initial wait before test", "2000")
   .option("--test-prompt <txt>", "Inline test instructions or file path")
   .option("-l, --log-level <level>", "Log level (debug, info, warn, error, silent)", "info")
+  .option("-tf, --test-file <path>", "Test file name")
   .parse(process.argv);
 
 export const opts = program.opts();
