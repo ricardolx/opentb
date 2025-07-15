@@ -37,9 +37,10 @@ export const callAgentInit = async (
     role: "user",
     content: `Here is the page source: ${pageSource}`,
   });
+  const actionSteps: string[] = [];
 
   const time = Date.now();
-  const response = await callLlmAgentLoop(content, driver, model);
+  const response = await callLlmAgentLoop(content, driver, actionSteps, model);
   const duration = Date.now() - time;
 
   console.log("[ callLlmAgentLoop ] ✅ complete");

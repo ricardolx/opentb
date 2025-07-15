@@ -9,18 +9,18 @@ import { GeminiModel, LLMModel } from "../../providers/models";
 
 /**
  * Initiate the agents recursive loop
- * @param contents 
- * @param driver 
- * @param model 
- * @returns 
+ * @param contents
+ * @param driver
+ * @param model
+ * @returns
  */
 export const callLlmAgentLoop = async (
   contents: ChatCompletionMessageParam[],
   driver: WebdriverIO.Browser,
+  actionSteps: string[] = [],
   model: LLMModel = GeminiModel.GEMINI_2_5_PRO
 ): Promise<ChatCompletionMessage> => {
   console.log("[ callLlmAgentLoop ] with", contents.length, "contents");
-  const actionSteps: string[] = [];
 
   const response = await callLlm(contents, model, TestTools);
 
@@ -40,7 +40,7 @@ export const callLlmAgentLoop = async (
     );
 
     console.log("[ callLlmAgentLoop ] calls executed, recursing");
-    return await callLlmAgentLoop(newContents, driver, model);
+    return await callLlmAgentLoop(newContents, driver, actionSteps, model);
   }
   console.log("[ callLlmAgentLoop ] no function calls, returning");
   return response;
