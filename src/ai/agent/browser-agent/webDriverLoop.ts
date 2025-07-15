@@ -83,6 +83,7 @@ export const executeWebDriverLoop = async (
   }
 
   console.log("[ added contents page source ]", contents.length);
+  console.log("[ action steps taken ]", actionSteps.length);
 
   return contents;
 };
