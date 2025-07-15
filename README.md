@@ -6,7 +6,7 @@ Open Test Bench is a CLI tool that uses AI to run end-to-end tests on mobile app
 
 - Node.js
 - Appium
-- An OpenAI API key
+- An OpenRouter API Key
 
 ## Installation
 
@@ -25,9 +25,28 @@ npm install
 cp .env.sample .env
 ```
 
-4. Add your OpenAI API key to the `.env` file:
+4. Add your OpenAI or OpenRouter API key to the `.env` file:
 ```bash
 OPENAI_API_KEY=your-api-key
+```
+
+5. If you are using OpenRouter, add your LLM_BASE_URL to the `.env` file:
+```bash
+LLM_BASE_URL=https://openrouter.ai/api/v1
+
+```
+6. Add your desired LLM_Model the `.env` file:
+```bash
+LLM_MODEL=
+```
+
+7. Add the device and bundle options to the `.env` file
+```bash
+DEFAULT_DEVICE=
+DEFAULT_OS_VERSION=
+BUNDLE_ID=
+APP_FILE_PATH=
+DEFAULT_BUNDLE_ID=
 ```
 
 ## Usage
