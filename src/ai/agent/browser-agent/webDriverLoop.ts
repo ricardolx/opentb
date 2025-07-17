@@ -131,6 +131,17 @@ const addScreenshotToContents = async (
   const base64Screenshot = currentPageScreenshot.toString("base64");
   contents.push({
     role: "user",
-    content: base64Screenshot,
+    content: [
+      {
+        type: "text",
+        text: "Current screenshot of the page:",
+      },
+      {
+        type: "image_url",
+        image_url: {
+          url: `data:image/png;base64,${base64Screenshot}`,
+        },
+      },
+    ],
   });
 };
