@@ -11,10 +11,11 @@
     "lint": "eslint . --ext .ts",
     "test:mobile": "ts-node test/index.ts",
     "appium:server": "npx appium server --port 4723",
-    "appium:install-xc": "npx appium driver install xcuitest "
+    "appium:install-xc": "npx appium driver install xcuitest@9.9.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
+    "appium-xcuitest-driver": "^9.9.5",
     "eslint": "^9.31.0",
     "globals": "^16.3.0",
     "typescript": "^5.8.3",
