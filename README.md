@@ -11,9 +11,6 @@ Open Test Bench is a CLI tool that uses AI to run end-to-end tests on mobile app
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/your-username/open-test-bench.git
-```
 
 2. Install the dependencies:
 ```bash
